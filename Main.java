@@ -33,7 +33,10 @@ public class Main {
         return counter;
     }
     public static void main(String[] args) throws IOException {
-        String string = new String(Files.readAllBytes(Paths.get("C:\\Users\\file.txt")));
+        // берем путь из аргументов командной строки
+        String pathToFile = args[0];
+        String string = new String(Files.readAllBytes(Paths.get(pathToFile)));
+        
         String[] words = string.split("[\\s]");
         String characters = String.join("", words);
         String[] sentence = string.split("\\.");
@@ -44,6 +47,8 @@ public class Main {
         System.out.println("Sentence: " + sentence.length);
         System.out.println("Characters: " + characters.length());
         System.out.println("Syllables: " + countSyllables(string));
+        // сразу считает polysyllables регуляркой
+        System.out.println("Polysyllables: " + string.split("([aeiouy]+[^$e(,.:;!?)]){3,}").length);
         //System.out.println("Polysyllables: " + polysyllables.length);
         //System.out.println("eee"+ eee.length);
 
@@ -51,7 +56,8 @@ public class Main {
         int ch = characters.length();
         int wo = words.length;
         int sent = sentence.length;
-        int polysyl = 17;
+        // здесь тоже добавляем polysyllables
+        int polysyl = string.split("([aeiouy]+[^$e(,.:;!?)]){3,}").length;
         int L = ch/wo * 100;
         int S = sent/wo * 100;
         System.out.println("Polysyllables: " + polysyl);

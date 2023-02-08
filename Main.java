@@ -4,7 +4,6 @@ import java.nio.file.Paths;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.*;
-
 public class Main {
     public static String readFileAsString(String filename) throws IOException {
         return new String(Files.readAllBytes(Paths.get(filename)));
@@ -16,34 +15,35 @@ public class Main {
             counter++;
         }
         String[] split = s.split("e!$|e[?]$|e,|e |e[),]|e$");
-
         ArrayList<String> al = new ArrayList<String>();
         Pattern tokSplitter = Pattern.compile("[aeiouy]+");
-
         for (int i = 0; i < split.length; i++) {
             String s1 = split[i];
             Matcher m = tokSplitter.matcher(s1);
-
             while (m.find()) {
                 al.add(m.group());
             }
         }
-
         counter += al.size();
         return counter;
     }
     public static void main(String[] args) throws IOException {
         String string = new String(Files.readAllBytes(Paths.get("C:\\Users\\file.txt")));
+        // берем путь из аргументов командной строки
+        String pathToFile = args[0];
+        String string = new String(Files.readAllBytes(Paths.get(pathToFile)));
+
         String[] words = string.split("[\\s]");
         String characters = String.join("", words);
         String[] sentence = string.split("\\.");
         String[] polysyllables = string.split("[aeiouy]{2,}[&&e]$");
         //String[] eee = string.split("$[aeiouy&&[^e]]*");
-
         System.out.println("Words: " + words.length);
         System.out.println("Sentence: " + sentence.length);
         System.out.println("Characters: " + characters.length());
         System.out.println("Syllables: " + countSyllables(string));
+        // сразу считает polysyllables регуляркой
+        System.out.println("Polysyllables: " + string.split("([aeiouy]+[^$e(,.:;!?)]){3,}").length);
         //System.out.println("Polysyllables: " + polysyllables.length);
         //System.out.println("eee"+ eee.length);
 
@@ -52,10 +52,11 @@ public class Main {
         int wo = words.length;
         int sent = sentence.length;
         int polysyl = 17;
+        // здесь тоже добавляем polysyllables
+        int polysyl = string.split("([aeiouy]+[^$e(,.:;!?)]){3,}").length;
         int L = ch/wo * 100;
         int S = sent/wo * 100;
         System.out.println("Polysyllables: " + polysyl);
-
         double score = 4.71 * ch / wo + 0.5 * wo / sent - 21.43;
         double score2 = (0.39 * (wo / sent) + 11.8 * (syl / wo) - 15.59);
         double score3 = 1.043 * Math.sqrt(polysyl * (30 / sent)) + 3.1291;
@@ -63,7 +64,6 @@ public class Main {
         System.out.println("\nThe ARI score is: " + Math.ceil(score));
         //System.out.println("The FK score is: " + score2);
         System.out.println("The FK score is: " + Math.ceil(score2));
-
         System.out.println("The SMOG score is: " + Math.ceil(score3));
         System.out.println("The Coleman–Liau score is: " + Math.ceil(score4));
         System.out.println("Enter the score you want to calculate (ARI, FK, SMOG, CL, all): ");
@@ -363,6 +363,5 @@ public class Main {
                 System.out.println("Not statement");
             }
         }
-
     }
 }
